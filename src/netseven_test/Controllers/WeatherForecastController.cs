@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Logging;
 
 namespace netseven_test.Controllers
@@ -23,6 +24,7 @@ namespace netseven_test.Controllers
             _logger = logger;
         }
 
+        [EnableRateLimiting("custom")]
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {

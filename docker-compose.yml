@@ -1,5 +1,9 @@
 version: '3.4'
 
+networks:
+  nettest:
+    driver: bridge
+
 services:
   netseven_test:
     image: api
@@ -8,14 +12,29 @@ services:
       dockerfile: src/netseven_test/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_URLS=http://+:80
       - REDIS_CONNECTION=redis:6379,password=password
     ports:
-      - "80"
-      - "443"
+      - "8080:80"
+    networks:
+      nettest:
+        aliases:
+          - api
   redis:
     image: redis
     ports:
-      - "6379"
-    command: redis-server --requirepass password
+      - "6379:6379"
+    command: redis-server --requirepass password --port 6379
+    networks:
+      nettest:
+        aliases:
+          - redis
 
+  redis-insights:
+    image: redislabs/redisinsight:latest
+    ports:
+      - "8001:8001"
+    networks:
+      nettest:
+        aliases:
+          - insights
